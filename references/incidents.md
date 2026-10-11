@@ -110,3 +110,32 @@ Short and factual: symptom → diagnosis → fix → lesson. Names, addresses an
 39. **One relay rotated through four public IPs in four days.** Two ranges were usable (GRE and downloads
     fine), two were dead in every mode; another provider's new range was dead for days too. Lesson: when
     a new range fails every test, ask for a different range.
+40. **A relay was pulled from DNS while ~1,500 users were on it.** The operator's own connection to the
+    relay ports failed one evening (0 bytes), while every other in-country datacenter reached them fine.
+    Fix: put the relay back. Lesson: confirm a dead relay from two independent in-country probes and from
+    the exit side before touching DNS.
+41. **The panel failed now and then for no visible reason.** Its database pool was at the default 5+5 and
+    hit `QueuePool limit` 89 times in three hours. Fix: pool 20+40 and a recreate of the container
+    (`pasarguard.md` §19).
+42. **The panel did not open from Iran at all.** It sat behind Cloudflare's proxy, which in-country
+    resolvers mapped to `188.114.98.0/.99.0`, and its direct IP was bulk-throttled. Fix: the panel port
+    DNATed over GRE on two relays, a certificate covering the subscription name, then DNS-only records
+    on the relays (`pasarguard.md` §20).
+43. **An exit was pinned at 200 Mbit.** Idle CPU, no steal, and 2–4 Mbit for a fresh download: a provider
+    throttle. Fix: the relay's path for that location moved to another exit over a new GRE link, tested on
+    a spare port first (`node-lifecycle.md` §12): 10.7 → 92 Mbit per connection.
+44. **A foreign panel's node was found on an exit.** Its control connection went to a panel IP outside the
+    fleet and it carried ~54 users. Removed with the operator's go-ahead after backing up its compose
+    directory and data.
+45. **Two servers came back changed one morning.** One had new SSH host keys, the other half its cores; the
+    provider had rebuilt or resized them. Lesson: verify a changed host key from abroad before trusting it
+    (`node-lifecycle.md` §13).
+46. **A reverse link to a relay lost 65% of its packets.** Packets of every size were lost, so it was not
+    the MTU: the relay's network was dropping foreign traffic. Fix: removed that relay from the
+    location's DNS.
+
+Provider tickets: give a short table of measurements with time and time zone, compare the failing
+destinations with a working baseline (1.1.1.1, domestic datacenters), state what changed (for example a
+new IP), and ask for a concrete fix (re-routing, another IP range, removing a bandwidth limit, moving off
+an overloaded host). For in-country providers, describe the problem as connectivity to foreign servers;
+do not describe the workload.

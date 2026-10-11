@@ -23,6 +23,8 @@ between releases.
 16. The panel and subscription domain behind relays
 17. Failed admin logins and blocking a source
 18. Inbounds without groups, and adding a tunnel inbound through the API
+19. Database connection pool exhaustion
+20. A panel domain behind Cloudflare's proxy, and turning the proxy off
 
 ## 1. Layout and read-only DB access
 
@@ -274,3 +276,52 @@ Adding a tunnel inbound to an existing node (verified on a 2026 PasarGuard relea
    `scripts/node/realuse.sh`.
 The admin token for these calls can be minted inside the panel container as in `scripts/panel/node_edit.sh`;
 some panel versions have no `is_sudo` column, so pick the admin without it.
+
+## 19. Database Connection Pool Exhaustion
+
+`operator-observed`, October 2026, PasarGuard 5.4 with MySQL. The panel loaded, but the user list, logins
+and bot calls failed now and then. The log showed bursts of
+`sqlalchemy.exc.TimeoutError: QueuePool limit of size 5 overflow 5 reached` (89 in three hours). The pool
+was still at the defaults: the startup line `Database pool: size=5, max_overflow=5` says so, and in `.env`
+the `SQLALCHEMY_POOL_SIZE` / `SQLALCHEMY_MAX_OVERFLOW` lines were commented out. A busy panel (19 nodes,
+thousands of subscription fetches, sales bots) needs more.
+
+- Count first: `docker logs --since 3h pasarguard-pasarguard-1 2>&1 | grep -c QueuePool`.
+- Set `SQLALCHEMY_POOL_SIZE = 20` and `SQLALCHEMY_MAX_OVERFLOW = 40` (back up `.env` first) and check the
+  database allows it (`SHOW VARIABLES LIKE 'max_connections'`, 151 by default on MySQL).
+- Apply with `docker compose up -d --force-recreate pasarguard`. `docker compose restart` does not re-read
+  `env_file`, so the old pool stays. After the change the timeouts went to zero.
+- A panel restart can take minutes: one panel failed twice with `[Errno 98] address already in use` on its
+  own port (the previous process had not released it) and came up on the third attempt about three
+  minutes later. Wait for `Uvicorn running` or a `401` from the login endpoint before declaring it broken.
+
+## 20. A Panel Domain Behind Cloudflare's Proxy, And Turning The Proxy Off
+
+`operator-observed`, October 2026. A panel and its subscription domain sat behind Cloudflare's proxy
+(orange cloud) on port 2096. From abroad they worked. From Iran they worked from one datacenter, took
+12 s from another and timed out from a third. In-country resolvers answered **`188.114.98.0` and
+`188.114.99.0`** for every proxied name instead of the zone's usual Cloudflare addresses; names that point
+straight at relays resolved normally. The panel's direct IP was bulk-throttled (page stalled after the
+headers), so neither path was usable for everyone.
+
+What fixed it:
+1. On two relays that already had GRE to the panel host, DNAT the panel port to the panel's tunnel
+   address (same pattern as a location port; persist it in the relay's nft file). Test a `GET` of the full
+   page and a wrong-password `POST` through each relay from two other datacenters.
+2. **Before turning the proxy off, give the panel a certificate for the name.** Behind the proxy, clients
+   only see Cloudflare's certificate, so a mismatched origin certificate goes unnoticed. With the proxy
+   off, every app checks the panel's own certificate and rejects subscriptions if the name is missing.
+   While the record is still proxied, Let's Encrypt can validate over HTTP through Cloudflare to the
+   panel host's port 80. With nginx already on port 80, use the webroot method:
+   `certbot certonly --cert-name NAME --expand --webroot -w WEBROOT -d panel.example -d sub.example`,
+   copy `fullchain.pem` and `privkey.pem` to the paths in `UVICORN_SSL_CERTFILE`/`KEYFILE` (back up the
+   old ones) and restart the panel.
+3. Verify with strict TLS (no `-k`) through every relay: `curl --resolve sub.example:2096:RELAY_IP
+   https://sub.example:2096/` must return the full page.
+4. Only then switch the records to the relays, DNS only. The subscription URL users have stays the same.
+
+Renewal: once the names point at in-country relays, HTTP validation from abroad fails, because the
+validators cannot reach the relays. Before the certificate expires, move it to DNS validation: add a
+`_acme-challenge` CNAME for each name to a zone whose API token you hold and renew with DNS-01, or keep
+one proxied name per certificate. Note the expiry date in the inventory. If the certificate is renewed
+without a deploy hook, copy the files and restart the panel yourself.

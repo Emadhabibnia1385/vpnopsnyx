@@ -90,6 +90,10 @@ Sanitized, `operator-observed` lessons from a two-brand fleet with several Irani
 10. **An inbound in no group reaches nobody.** `scripts/panel/inbound_groups.py`, and adding a tunnel inbound, host and groups through the API: `references/pasarguard.md` §18.
 11. **Relay IP ranges differ, quotas run out, exits can have upload caps.** Ask for another range when a new one fails every test; check quotas when a relay works only from inside the country. `references/tunnels.md` §17, `references/iran-filtering.md` §5.
 12. **Two services on one port 443** with an nginx SNI router: `references/tunnels.md` §18.
+13. **Never pull a relay on one vantage point.** The operator's own connection failed while ~1,500 users were happily on the relay. Confirm from two in-country probes and the exit side. `references/cloudflare.md` §4.
+14. **Keep the panel off Cloudflare's proxy in Iran.** Resolvers mapped proxied names to two slow addresses; put the panel port on GRE relays, get a certificate for the name, then go DNS-only. `references/pasarguard.md` §20.
+15. **Raise PasarGuard's database pool.** The default 5+5 caused random panel failures; 20+40 and a container recreate fixed them. `references/pasarguard.md` §19.
+16. **Move a throttled exit on a spare port first.** Re-point one relay's DNAT after testing, without flushing conntrack, and users drain across with no drop. `references/node-lifecycle.md` §12.
 
 More in [docs/field-observations-2026-10.md](docs/field-observations-2026-10.md).
 

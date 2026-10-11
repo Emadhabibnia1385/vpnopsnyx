@@ -60,7 +60,7 @@ cf.sh GET|POST|PUT|PATCH|DELETE PATH [json] raw call
 |---|---|
 | A relay cannot serve location X | `del-a` the relay's IP from X's name, and from the subscription domain if it doubles as X's tunnel address |
 | A relay is back | Data-test it for every location first, then `add-a` it back to exactly those names |
-| A relay is fully down (quota exhausted, provider outage) | Remove it from every name. Check that each name still has at least one IP |
+| A relay is fully down (quota exhausted, provider outage) | Confirm it first from two in-country probes in other datacenters and from the exit side (tunnel receive counters at 0 B/s), never from one vantage point. Then remove it from every name. Check that each name still has at least one IP |
 | New relay | Add it to a single location first, watch its users and data test, then extend |
 | Shift load between relays | Change which names list which relays. You can't weight round-robin, but you can remove a relay from the heaviest names |
 | A name would lose its last IP | Leave one record in place (or point it at a working relay) instead of deleting the last one. An empty name returns NXDOMAIN, and resolvers cache that for the zone's SOA minimum (1800 s on Cloudflare), so users stay broken for up to 30 minutes after you add a record back |
@@ -76,3 +76,8 @@ dig +short @8.8.8.8 de.example.com A
 ```
 Then run the data test against **each** IP returned, using that name's port. A name is only healthy
 when every IP in it passes.
+
+Proxied (orange-cloud) names behave differently inside Iran: in-country resolvers answered
+`188.114.98.0` / `188.114.99.0` for them, and those paths were slow or dead from some datacenters.
+Resolve the name from an in-country server (`getent ahostsv4 NAME`) as well as from `1.1.1.1`. Keep the
+panel and subscription domains DNS-only on relays (`pasarguard.md` §20).

@@ -12,6 +12,8 @@
 9. Controlled package upgrade
 10. Reboot verification
 11. Moving a whole server (several nodes, tunnels and other tenants)
+12. Moving one location's relay path to another exit
+13. A server that was rebuilt, migrated or resized
 
 ## 1. First contact with a new server
 
@@ -158,3 +160,40 @@ its startup is relied upon to resynchronize nodes.
    one and the operator has checked nothing else depends on it.
 7. When two brands share a server, decide with the operator whether the other brand's nodes move with
    it or go to that brand's own server.
+
+## 12. Moving One Location's Relay Path To Another Exit
+
+`operator-observed`, October 2026. One exit sat flat at about 200 Mbit in and out with an idle CPU, and a
+fresh download on it got 2–4 Mbit (a provider throttle, `capacity.md` §3). The operator had a second exit
+for the same location. The move, without dropping anyone:
+
+1. Check the new exit already serves the location port (`ss -ltn`) and has headroom (cores, CPU, free
+   download).
+2. Build a temporary GRE test (`scripts/relay/gretest.sh`) between the relay and the new exit, then the
+   persistent link (`scripts/relay/greunit.sh`) on a free tunnel subnet. Delete the test links first; the
+   kernel refuses a second GRE tunnel with the same endpoints.
+3. On the relay, DNAT a **spare port** to the new exit's tunnel address and test it from two in-country
+   probes: the full page, and a 20 MB download through the Reality fallback (`capacity.md` §4). Here:
+   92 Mbit on the new path against 10.7 Mbit on the old one.
+4. Change the location port's DNAT target in the relay's nft file and in the live rules (`nft -a` to find
+   the handles), and remove the spare-port rules.
+5. Do not flush conntrack. Existing flows keep their old mapping and drain to the old exit; new
+   connections go to the new one. About 6,000 of 10,000 users moved within ten minutes, with no visible
+   drop.
+6. Watch the new exit's CPU while users arrive, and keep the old tunnel up for a day so that rolling back
+   is one edit.
+
+## 13. A Server That Was Rebuilt, Migrated Or Resized
+
+`operator-observed`, October 2026. Two servers came back one morning with
+`REMOTE HOST IDENTIFICATION HAS CHANGED` on one of them and four cores instead of eight on the other.
+Both had a new directory under `/var/lib/cloud/instances/` (a new cloud-init instance id, so the provider
+rebuilt, migrated or resized them).
+
+- Do not accept a changed host key blindly. Fetch it from a foreign server too
+  (`ssh-keyscan HOST | ssh-keygen -lf -`); the fingerprint must match. Check that the services still show
+  their known state (here, the same panel certificate and data). Only then back up `known_hosts`, replace
+  the entry and log in. Tell the operator in case nobody on their side did it.
+- Re-take the baseline (`nproc`, RAM, disk, free download). The resized server ran at 85–95% CPU with
+  the same users on half the cores.
+- After any such event, check that tunnels, DNAT and nodes came back (`scripts/local/reboot_verify.sh`).

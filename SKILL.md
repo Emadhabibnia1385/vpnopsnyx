@@ -31,7 +31,9 @@ Assume the operator may run a paid VPN/proxy service where one bad command can d
 6. Report what changed, what was verified, what remains uncertain, and how to roll back.
 7. Record the vantage point of every network test. A test run while the operator's
    own VPN, TUN interface, or system proxy is active may measure a foreign egress
-   path instead of the customer's in-country path.
+   path instead of the customer's in-country path. The operator's own connection can also fail on its
+   own: never pull a relay from DNS on one vantage point. Confirm from two in-country probes in other
+   datacenters (never a relay testing itself) and check real-user counters first.
 8. Treat a new or rebuilt network path as unproven for 24 hours. Re-check its tunnel
    health and real-user bytes the next day before reporting it as stable; some paths
    are filtered within an hour of carrying traffic.

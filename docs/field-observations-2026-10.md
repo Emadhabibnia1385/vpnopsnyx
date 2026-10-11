@@ -38,6 +38,17 @@ relay datacenters. Names, addresses, domains and tokens are removed. Everything 
 - One port can serve two services through an SNI router; a host allowlist in the raw table can still hide
   the new one from its clients.
 
+- One evening the operator's own connection failed to every relay port while other datacenters reached
+  them; a relay pulled from DNS on that evidence had to be put back.
+- A busy panel's database pool at the default 5+5 produced intermittent failures; 20+40 ended them.
+- In-country resolvers mapped Cloudflare-proxied names to two fixed addresses that were slow or dead from
+  some datacenters; DNS-only names on relays worked.
+- Turning a proxied subscription name DNS-only needed a matching origin certificate first, and its
+  HTTP renewal will fail once the name points at in-country relays.
+- A throttled exit's users were moved to another exit by re-pointing one relay's DNAT, tested on a spare
+  port first; without a conntrack flush, users drained across with no visible drop.
+- Servers rebuilt or resized by the provider came back with new SSH host keys or fewer cores.
+
 ## Handling Rule
 
 Same as September: prefer live evidence and the deployed version's behavior, label new findings, and
