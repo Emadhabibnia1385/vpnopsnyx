@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="552" viewBox="0 0 1200 552" role="img" aria-labelledby="title desc"><title id="title">How VPNOpsNyx works</title><desc id="desc">Users reach an Iranian relay through a DNS name, the relay forwards to a foreign exit over a tunnel, and the exit is managed by a panel. VPNOpsNyx measures each layer with delivered bytes from in-country probes and changes nothing without the operator's approval.</desc><rect width="1200" height="552" rx="24" fill="#090b14"/><g font-family="'Segoe UI', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif">
+  <rect x="48" y="40" width="1104" height="96" rx="14" fill="#0e1120" stroke="#303345" stroke-width="1.5"/>
+  <text x="80" y="76" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="16" letter-spacing="2" fill="#a8b2ff">DNS</text>
+  <text x="80" y="110" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="20" fill="#f3f0e8">de.example → relay-a, relay-b</text>
+  <text x="640" y="98" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="26" fill="#a8b2ff">›</text>
+  <text x="680" y="82" font-size="22" fill="#f3f0e8">Steer users only to relays that carry data</text>
+  <text x="680" y="112" font-size="19" fill="#aaaec4">Cloudflare records, brand by brand, with a change log</text>
+  <rect x="48" y="152" width="1104" height="96" rx="14" fill="#0e1120" stroke="#303345" stroke-width="1.5"/>
+  <text x="80" y="188" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="16" letter-spacing="2" fill="#a8b2ff">RELAY</text>
+  <text x="80" y="222" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="20" fill="#f3f0e8">nftables DNAT · port → tunnel peer</text>
+  <text x="640" y="210" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="26" fill="#a8b2ff">›</text>
+  <text x="680" y="194" font-size="22" fill="#f3f0e8">Count real users, CPU, loss and quota per relay</text>
+  <text x="680" y="224" font-size="19" fill="#aaaec4">a relay that tests itself proves nothing</text>
+  <rect x="48" y="264" width="1104" height="96" rx="14" fill="#0e1120" stroke="#303345" stroke-width="1.5"/>
+  <text x="80" y="300" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="16" letter-spacing="2" fill="#a8b2ff">TUNNEL</text>
+  <text x="80" y="334" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="20" fill="#f3f0e8">GRE · BackPack xDi · Backhaul · WG</text>
+  <text x="640" y="322" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="26" fill="#a8b2ff">›</text>
+  <text x="680" y="306" font-size="22" fill="#f3f0e8">Pick the mode each datacenter lets through</text>
+  <text x="680" y="336" font-size="19" fill="#aaaec4">test on a spare port first, switch only after it passes</text>
+  <rect x="48" y="376" width="1104" height="96" rx="14" fill="#0e1120" stroke="#303345" stroke-width="1.5"/>
+  <text x="80" y="412" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="16" letter-spacing="2" fill="#a8b2ff">EXIT + PANEL</text>
+  <text x="80" y="446" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="20" fill="#f3f0e8">Xray · sing-box · PasarGuard · 3x-ui</text>
+  <text x="640" y="434" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="26" fill="#a8b2ff">›</text>
+  <text x="680" y="418" font-size="22" fill="#f3f0e8">Nodes, certificates, upgrades, capacity</text>
+  <text x="680" y="448" font-size="19" fill="#aaaec4">panel login checked with a real POST, not a page load</text>
+  <text x="48" y="516" font-family="'Cascadia Mono', 'Cascadia Code', Consolas, ui-monospace, 'SF Mono', Menlo, monospace" font-size="17" fill="#6e7391">never without your OK:  DNS  ·  panel database  ·  user subscriptions  ·  credentials</text>
+</g></svg>
