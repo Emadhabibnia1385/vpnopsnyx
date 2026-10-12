@@ -94,6 +94,9 @@ git clone https://github.com/nyxon-tech/vpnopsnyx ~/.codex/skills/vpnopsnyx
 14. **在伊朗不要把面板放在 Cloudflare 代理后面。** 国内解析器把被代理的名称解析到两个很慢的地址；把面板端口放到 GRE 中继上，为该名称申请证书，然后再改为仅 DNS。`references/pasarguard.md` §20。
 15. **调大 PasarGuard 的数据库连接池。** 默认的 5+5 导致面板随机出错；改为 20+40 并重建容器后恢复正常。`references/pasarguard.md` §19。
 16. **被限速的出口先用备用端口迁移。** 测试通过后改一台中继的 DNAT 目标，不要清空 conntrack，用户会无中断地迁移过去。`references/node-lifecycle.md` §12。
+17. **面板域名只保留通过 POST 测试的地址。** 某个中继无论走 xDi 还是 GRE 都会卡住下单和续费请求体，一周后又被别人加了回去。`scripts/relay/panel_path_check.sh`，`references/pasarguard.md` §16。
+18. **每新增一个节点就检查 inbound 的组。** 两个新出口有主机和 DNS，却没有组。`scripts/panel/inbound_groups.py`。
+19. **机器人在境外、面板在境内：** 在能接受境外连接的境内中继上建带密码的代理，只允许机器人 IP。`scripts/relay/bot_panel_proxy.sh`。
 
 更多内容见 [docs/field-observations-2026-10.md](docs/field-observations-2026-10.md)。
 

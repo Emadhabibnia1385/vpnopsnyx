@@ -94,6 +94,9 @@ Sanitized, `operator-observed` lessons from a two-brand fleet with several Irani
 14. **Keep the panel off Cloudflare's proxy in Iran.** Resolvers mapped proxied names to two slow addresses; put the panel port on GRE relays, get a certificate for the name, then go DNS-only. `references/pasarguard.md` §20.
 15. **Raise PasarGuard's database pool.** The default 5+5 caused random panel failures; 20+40 and a container recreate fixed them. `references/pasarguard.md` §19.
 16. **Move a throttled exit on a spare port first.** Re-point one relay's DNAT after testing, without flushing conntrack, and users drain across with no drop. `references/node-lifecycle.md` §12.
+17. **Only addresses that pass a POST test belong in the panel domain.** One relay stalled order and renewal bodies over xDi and again over GRE, and was re-added by someone else a week later. `scripts/relay/panel_path_check.sh`, `references/pasarguard.md` §16.
+18. **Run the inbound-group audit after every new node.** Two new exits had hosts and DNS but no group. `scripts/panel/inbound_groups.py`.
+19. **Bots abroad, panels in the country:** a password-protected proxy on an in-country relay that accepts flows started abroad, open only to the bot's IP. `scripts/relay/bot_panel_proxy.sh`.
 
 More in [docs/field-observations-2026-10.md](docs/field-observations-2026-10.md).
 

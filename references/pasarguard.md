@@ -227,7 +227,12 @@ a second node on the same host may still connect if its user list is small.
 one domain (often the subscription domain on the panel port). Which relays that domain points to decides
 whether purchases work:
 
-- **Never put an xDi relay (or any ICMP-carried L3 path) behind the panel domain.** Through such a relay,
+- **Never put an xDi relay (or any ICMP-carried L3 path) behind the panel domain.** The same relay later broke
+  `POST`/`PUT` bodies again over a plain GRE link (same ~15-minute stall and 400), so the rule is about the
+  relay, not the tunnel type: only addresses that pass `scripts/relay/panel_path_check.sh` belong in the
+  record. It also came back twice because someone else re-added the relay to the record; keep a written
+  list of addresses that must never be in it and re-run the check after anyone edits DNS.
+  Through such a relay,
   `GET` requests (status, subscription pages) worked, but request bodies stalled: `POST /api/user` and
   `PUT /api/user/{name}` arrived after ~16 minutes and were answered `400 Bad Request`. A sales bot's
   renewals and new orders failed and refunded the customers for the whole hour that relay was in the

@@ -103,6 +103,13 @@ inside one relay. Check that each relay can actually reach its exit, and keep ch
 path can get the exit IP blacklisted after hours of heavy traffic (`iran-filtering.md`). A reverse
 tunnel from the second exit into one relay is the most robust way to split.
 
+`operator-observed`, October 2026: one exit carried a whole location (~15,000 connections, load 4.8 on 4 cores)
+through two relays while its sibling exit sat idle. Re-pointing only the second relay's DNAT for the
+location port to the idle exit (over an existing GRE link, no conntrack flush) split it 7,500 / 7,500
+within minutes and the busy exit fell to load 2.7. An exit shared by two brands needs the same check:
+one 4-core exit serving ~3,000 users of one brand and ~7,700 of the other ran at 70% CPU before the
+evening peak.
+
 ## 11. Relay Headroom And Exit Assignment
 
 Measure free relay bandwidth at peak, not only interface capacity. In one observed

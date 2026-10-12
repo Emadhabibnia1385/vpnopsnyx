@@ -13,6 +13,7 @@
 # The full proxy URL (with the password) is written to /root/bot-panel-proxy.txt (mode 600) and never
 # printed; read it on the server with `cat /root/bot-panel-proxy.txt` and paste it into the bot.
 #
+# Can also run directly ON the server: copy this file there and run `BOT_IP=... bash bot_panel_proxy.sh`.
 # Choose the server carefully: it must ACCEPT connections that start abroad (many in-country datacenters
 # drop them) and reach the panels. Check first: on the server `timeout 300 python3 -m http.server 18799`,
 # then from the bot server `curl -m 10 -o /dev/null -w '%{http_code}\n' http://SERVER:18799/` -> 200.

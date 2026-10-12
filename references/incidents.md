@@ -133,6 +133,16 @@ Short and factual: symptom → diagnosis → fix → lesson. Names, addresses an
 46. **A reverse link to a relay lost 65% of its packets.** Packets of every size were lost, so it was not
     the MTU: the relay's network was dropping foreign traffic. Fix: removed that relay from the
     location's DNS.
+47. **Bot purchases failed again a week later.** Someone re-added a relay that was known to stall `POST`
+    bodies to the panel domain (this time over GRE). Lesson: keep a list of addresses that must never be in
+    the panel record, and run `scripts/relay/panel_path_check.sh` after anyone changes it.
+48. **One exit carried a whole location while its sibling idled.** Re-pointing one relay to the idle exit
+    halved the load in minutes (`capacity.md` §10).
+49. **Two new exits got hosts and DNS but no group.** Neither would have reached a single user. Lesson:
+    run `scripts/panel/inbound_groups.py` after adding any node or inbound.
+50. **A bot abroad had to sell services on panels hosted in the country.** It could not reach them
+    directly; a password-protected proxy on the one in-country relay that accepts flows started abroad,
+    open only to the bot's IP, solved it (`scripts/relay/bot_panel_proxy.sh`).
 
 Provider tickets: give a short table of measurements with time and time zone, compare the failing
 destinations with a working baseline (1.1.1.1, domestic datacenters), state what changed (for example a
