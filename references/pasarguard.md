@@ -243,6 +243,10 @@ whether purchases work:
   address of the record from 2–3 datacenters with `scripts/relay/panel_path_check.sh`.
 - Bots hosted abroad cannot reach an in-country relay that drops foreign-initiated flows; pin the panel
   name to the panel IP in the bot server's `/etc/hosts`, or give bots their own name.
+- For panels hosted in the country, give the bot a proxy on an in-country server that accepts flows
+  started abroad: `scripts/relay/bot_panel_proxy.sh` (tinyproxy, bot IP allowlist, password, no
+  `ConnectPort` limits because the default config allows CONNECT only to 443/563). Panels abroad need no
+  proxy; use the `/etc/hosts` pin above.
 
 ## 17. Failed Admin Logins And Blocking A Source
 
