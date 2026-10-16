@@ -176,6 +176,13 @@ If approved, reconnect/restart the affected node or restart the panel during a
 maintenance window. For a fleet reboot, exits first and panel host last can force a
 fresh startup synchronization, but it also restarts every node and must be announced.
 
+Field-confirmed (October 2026): after a provider reboot of a shared exit, two nodes of one panel showed
+`connected` in the dashboard for about 1.5 hours while their Xray was not running (node log:
+`Method: SyncUser, Code: Unavailable` every few seconds, tunnel ports not listening). Every relay's path
+to that location failed, and the panel's own status gave no hint. Saving each node again with the same
+address and port (`scripts/panel/node_edit.sh`) restarted its core in seconds. After any exit reboot,
+run `ss -ltn` on the exit for each inbound port; do not trust the node status.
+
 ## 13. Host-Service Port Collisions
 
 Compare every core inbound port against host listeners before reboot or upgrade:

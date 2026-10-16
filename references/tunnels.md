@@ -294,6 +294,12 @@ Traps:
 - **A shared exit has one dial budget for all brands.** An exit that hosts nodes of two brands can still
   dial only one relay. Decide which brand gets it, and reach the other brand through GRE, a forward link
   or a reverse backhaul.
+- **Too much ICMP can close a relay to xDi entirely.** One relay passed 190–220 Mbit on four reverse
+  test links in a row. About 20 minutes after three persistent reverse links and a dozen test links had
+  run, plain ping from every exit to the relay was at 100% loss and every xDi link on it was dead,
+  including fresh tests. Add xDi links to a relay one at a time, check plain ping from abroad to the
+  relay after each one, and stop at the first sign of loss. Disable what you added rather than
+  restarting it in a loop, and retest the next day.
 - **Dead links keep burning CPU.** A reverse link whose path had died still used about half a core on
   the relay, which was already saturated. Disable dead links on both ends as soon as they are confirmed
   dead (`scripts/node/bpstatus.sh`), not only before building new ones.

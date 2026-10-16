@@ -194,6 +194,10 @@ rebuilt, migrated or resized them).
   (`ssh-keyscan HOST | ssh-keygen -lf -`); the fingerprint must match. Check that the services still show
   their known state (here, the same panel certificate and data). Only then back up `known_hosts`, replace
   the entry and log in. Tell the operator in case nobody on their side did it.
+- Once logged in, compare the host key files' timestamps with the boot time
+  (`ls -l /etc/ssh/ssh_host_*_key.pub; uptime -s`), and review the accepted logins since then
+  (`journalctl -u ssh --since -24h | grep Accepted`) and `authorized_keys`. Keys created at the first boot
+  of a new cloud-init instance, with only known keys and source addresses, point to a provider action.
 - Re-take the baseline (`nproc`, RAM, disk, free download). The resized server ran at 85–95% CPU with
   the same users on half the cores.
 - After any such event, check that tunnels, DNAT and nodes came back (`scripts/local/reboot_verify.sh`).

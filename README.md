@@ -97,6 +97,8 @@ Sanitized, `operator-observed` lessons from a two-brand fleet with several Irani
 17. **Only addresses that pass a POST test belong in the panel domain.** One relay stalled order and renewal bodies over xDi and again over GRE, and was re-added by someone else a week later. `scripts/relay/panel_path_check.sh`, `references/pasarguard.md` §16.
 18. **Run the inbound-group audit after every new node.** Two new exits had hosts and DNS but no group. `scripts/panel/inbound_groups.py`.
 19. **Bots abroad, panels in the country:** a password-protected proxy on an in-country relay that accepts flows started abroad, open only to the bot's IP. `scripts/relay/bot_panel_proxy.sh`.
+20. **After an exit reboots, check its ports, not the panel.** Two nodes showed `connected` for 1.5 hours with Xray stopped; re-saving them fixed it. `references/pasarguard.md` §12.
+21. **Add xDi links to a relay one at a time.** Several at once got ICMP from abroad blocked within 20 minutes and killed every xDi link on that relay. `references/tunnels.md` §15.
 
 More in [docs/field-observations-2026-10.md](docs/field-observations-2026-10.md).
 

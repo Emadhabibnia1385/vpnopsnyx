@@ -143,6 +143,16 @@ Short and factual: symptom → diagnosis → fix → lesson. Names, addresses an
 50. **A bot abroad had to sell services on panels hosted in the country.** It could not reach them
     directly; a password-protected proxy on the one in-country relay that accepts flows started abroad,
     open only to the bot's IP, solved it (`scripts/relay/bot_panel_proxy.sh`).
+51. **A location died after a provider reboot while the panel said `connected`.** The exit's Xray never
+    restarted; re-saving the two nodes fixed it (`pasarguard.md` §12).
+52. **A relay's xDi links all died in 20 minutes.** Four reverse links had tested at ~200 Mbit; after
+    several ran together, ICMP from abroad to the relay was blocked (`tunnels.md` §15).
+53. **A relay's direct DNAT to one exit gave users almost nothing.** 0.02 MB per connection through that
+    relay while the exit served other paths at ~1 MB. A forward xDi link to the same exit passed
+    100–140 Mbit; re-pointing the DNAT to the tunnel IP fixed it without a DNS change.
+54. **Two servers' SSH host keys changed overnight.** The provider had migrated both (new cloud-init
+    instance id, new hostnames, data intact). The keys matched from three vantage points and only known
+    keys were authorized, so the entries were replaced (`node-lifecycle.md` §13).
 
 Provider tickets: give a short table of measurements with time and time zone, compare the failing
 destinations with a working baseline (1.1.1.1, domestic datacenters), state what changed (for example a
