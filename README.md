@@ -99,6 +99,7 @@ Sanitized, `operator-observed` lessons from a two-brand fleet with several Irani
 19. **Bots abroad, panels in the country:** a password-protected proxy on an in-country relay that accepts flows started abroad, open only to the bot's IP. `scripts/relay/bot_panel_proxy.sh`.
 20. **After an exit reboots, check its ports, not the panel.** Two nodes showed `connected` for 1.5 hours with Xray stopped; re-saving them fixed it. `references/pasarguard.md` §12.
 21. **Add xDi links to a relay one at a time.** Several at once got ICMP from abroad blocked within 20 minutes and killed every xDi link on that relay. `references/tunnels.md` §15.
+22. **Ping a GRE link from both ends.** One answered from the exit but not from the relay, and every port over it was closed; restarting the relay's GRE unit fixed it. `references/tunnels.md` §16.
 
 More in [docs/field-observations-2026-10.md](docs/field-observations-2026-10.md).
 

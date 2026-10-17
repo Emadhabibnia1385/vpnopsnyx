@@ -322,6 +322,9 @@ on paths where TCP DNAT died and xDi was lossy:
 - The unit pins both public IPs. When either end's IP changes, update `local`/`remote` on both ends.
 - Verify with real users (`scripts/node/realuse.sh`); a GRE link that passes ping can still be rate
   limited on purpose, which shows as one exact low speed.
+- **Ping the tunnel from both ends.** One link answered pings sent from the exit but lost 100% of those
+  sent from the relay, and every port DNAT-ed over it was closed. Restarting the relay's GRE unit
+  (`systemctl restart gre-NAME`) fixed it at once. A one-sided ping check would have reported it healthy.
 
 ## 17. When A Relay Gets A New IP
 

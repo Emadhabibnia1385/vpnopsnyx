@@ -135,6 +135,10 @@ location that depends only on that relay drops at once. After the top-up, tunnel
 for hours may need a restart to reconnect immediately.
 
 - Track each relay's quota burn like any other capacity metric and warn days ahead.
+- **Two relays can run out on the same morning.** Both relays of one fleet went dark within hours of
+  each other, and for a while every location hung on whichever one came back first. Stagger the
+  quota sizes or renewal dates so the relays do not empty together. When one goes dark, add the other
+  to the affected names before deleting the dead record, so no name is ever left without an address.
 - List the locations that have exactly one working relay; they are the ones a quota or DC event takes
   down. Adding a second relay of a *different* path type (for example a reverse xDi link next to a
   reverse backhaul tunnel) protects against both quota and filtering events.

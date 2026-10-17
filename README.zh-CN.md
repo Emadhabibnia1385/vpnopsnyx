@@ -99,6 +99,7 @@ git clone https://github.com/nyxon-tech/vpnopsnyx ~/.codex/skills/vpnopsnyx
 19. **机器人在境外、面板在境内：** 在能接受境外连接的境内中继上建带密码的代理，只允许机器人 IP。`scripts/relay/bot_panel_proxy.sh`。
 20. **出口重启后检查其端口，而不是面板状态。** 两个节点在 Xray 停止的情况下显示 `connected` 达 1.5 小时；重新保存节点后恢复。`references/pasarguard.md` §12。
 21. **逐条为中继添加 xDi 链路。** 同时添加多条后，20 分钟内境外到该中继的 ICMP 被封，该中继上的所有 xDi 链路失效。`references/tunnels.md` §15。
+22. **从两端 ping GRE 链路。** 一条链路从出口端有响应、从中继端无响应，经过它的端口全部关闭；在中继上重启 GRE 单元后恢复。`references/tunnels.md` §16。
 
 更多内容见 [docs/field-observations-2026-10.md](docs/field-observations-2026-10.md)。
 

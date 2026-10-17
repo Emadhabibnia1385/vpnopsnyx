@@ -158,6 +158,12 @@ Short and factual: symptom → diagnosis → fix → lesson. Names, addresses an
     minutes, then ICMP between that relay and that exit was blocked; exits without a link stayed open.
     Lesson: when a fresh link dies like this, disable it at once (each retry burns another pair) and ask
     the provider for an IP in another range (`tunnels.md` §15).
+56. **The relay that stalls bot `POST` bodies was found in the panel record a third time**, this time
+    replacing the working address instead of joining it. Lesson: run `scripts/relay/panel_path_check.sh`
+    on every routine check, not only after a known DNS change.
+57. **A GRE link answered from one end only.** Exit-to-relay ping worked, relay-to-exit lost 100%, and
+    the location's ports were closed on that relay; restarting the relay's GRE unit fixed it
+    (`tunnels.md` §16).
 
 Provider tickets: give a short table of measurements with time and time zone, compare the failing
 destinations with a working baseline (1.1.1.1, domestic datacenters), state what changed (for example a
