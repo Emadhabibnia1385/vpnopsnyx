@@ -325,6 +325,8 @@ on paths where TCP DNAT died and xDi was lossy:
 - **Ping the tunnel from both ends.** One link answered pings sent from the exit but lost 100% of those
   sent from the relay, and every port DNAT-ed over it was closed. Restarting the relay's GRE unit
   (`systemctl restart gre-NAME`) fixed it at once. A one-sided ping check would have reported it healthy.
+  The same link failed the same way that evening; this time the relay-side restart did nothing and
+  restarting the exit's unit fixed it. Restart one end, recheck from both, then restart the other.
 
 ## 17. When A Relay Gets A New IP
 
