@@ -294,6 +294,12 @@ Traps:
 - **A shared exit has one dial budget for all brands.** An exit that hosts nodes of two brands can still
   dial only one relay. Decide which brand gets it, and reach the other brand through GRE, a forward link
   or a reverse backhaul.
+- **Two reverse links on one relay can steal each other's echoes.** A relay already listened for one
+  exit's reverse link; a second reverse listener for another exit passed its test, then died overnight
+  while its log said `xdi echoes from <the first exit> carry a different tunnel's tag`. The exit side
+  still reported routine rekeys. Instead of a second link, carry the extra port over the existing link to
+  a sibling exit in the same datacenter and DNAT it on from there (a small `nft` table on the sibling,
+  matched on the link's interface, plus `masquerade`).
 - **Too much ICMP can close a relay to xDi entirely.** One relay passed 190–220 Mbit on four reverse
   test links in a row. About 20 minutes after three persistent reverse links and a dozen test links had
   run, plain ping from every exit to the relay was at 100% loss and every xDi link on it was dead,

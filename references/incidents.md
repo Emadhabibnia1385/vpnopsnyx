@@ -164,6 +164,13 @@ Short and factual: symptom → diagnosis → fix → lesson. Names, addresses an
 57. **A GRE link answered from one end only.** Exit-to-relay ping worked, relay-to-exit lost 100%, and
     the location's ports were closed on that relay; restarting the relay's GRE unit fixed it
     (`tunnels.md` §16).
+58. **A relay that was also every SSH jump host went dark.** Ping still answered but every TCP port,
+    SSH included, was closed, so the operator lost SSH to the other relays too. Its users moved off once
+    the record was removed. Lesson: keep a second jump host in the SSH config and probe relays with TCP,
+    not ping.
+59. **A new relay set up by someone else lacked one port.** Every location worked except one name whose
+    host used a second port on the same exit. Lesson: map ports from the panel's host list
+    (address, port), not from memory, and probe every port on every relay before adding it to DNS.
 
 Provider tickets: give a short table of measurements with time and time zone, compare the failing
 destinations with a working baseline (1.1.1.1, domestic datacenters), state what changed (for example a
