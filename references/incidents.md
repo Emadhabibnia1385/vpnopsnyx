@@ -171,6 +171,15 @@ Short and factual: symptom → diagnosis → fix → lesson. Names, addresses an
 59. **A new relay set up by someone else lacked one port.** Every location worked except one name whose
     host used a second port on the same exit. Lesson: map ports from the panel's host list
     (address, port), not from memory, and probe every port on every relay before adding it to DNS.
+60. **A location had zero users while the panel showed its node connected.** The node had not
+    rebooted; its core had stopped. Re-saving the node fixed it in seconds. Lesson: check listeners
+    on every routine check (`scripts/local/listener_check.sh`, `pasarguard.md` §12).
+61. **A 2-core relay ran out of CPU at 150 Mbit.** Two copies of a third-party tunnel tool, started by
+    hand from an SSH session days earlier, were spinning at ~16% CPU each while listening on nothing;
+    the binary ran from a deleted in-memory file under a one-character process name. Lesson: on a
+    relay that is busier than its traffic explains, list processes by CPU, check
+    `/proc/PID/cmdline` and `/proc/PID/exe`, and ask the operator before stopping anything you did not
+    start.
 
 Provider tickets: give a short table of measurements with time and time zone, compare the failing
 destinations with a working baseline (1.1.1.1, domestic datacenters), state what changed (for example a

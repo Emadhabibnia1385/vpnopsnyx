@@ -182,6 +182,9 @@ Field-confirmed (October 2026): after a provider reboot of a shared exit, two no
 to that location failed, and the panel's own status gave no hint. Saving each node again with the same
 address and port (`scripts/panel/node_edit.sh`) restarted its core in seconds. After any exit reboot,
 run `ss -ltn` on the exit for each inbound port; do not trust the node status.
+It also happens **without any reboot**: a node container that had been up for six days had a stopped core,
+the panel still said `connected`, and the location carried zero users through every relay. Make a
+listener check part of every routine check (`scripts/local/listener_check.sh`), not only after reboots.
 
 ## 13. Host-Service Port Collisions
 
