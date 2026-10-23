@@ -333,6 +333,14 @@ on paths where TCP DNAT died and xDi was lossy:
   (`systemctl restart gre-NAME`) fixed it at once. A one-sided ping check would have reported it healthy.
   The same link failed the same way that evening; this time the relay-side restart did nothing and
   restarting the exit's unit fixed it. Restart one end, recheck from both, then restart the other.
+- **A throttled relay-exit pair can be bypassed through a sibling exit.** One relay reached one exit at
+  1–2 Mbit over GRE and over direct TCP alike (restarts on both ends changed nothing), while both
+  machines were fast to everything else. Sending that port over the relay's healthy GRE link to another
+  exit and DNAT-ing it from there to the slow exit (an `nft` table matched on the GRE interface, plus
+  `masquerade`) restored the path; the sibling reached the slow exit at ~150 Mbit.
+- **Check the exit's own upload before blaming a tunnel.** When every relay and a foreign server too
+  download slowly from one exit while its own downloads are fast, the provider has capped its upload;
+  no tunnel change helps. Measure from a foreign server first, then open a ticket.
 
 ## 17. When A Relay Gets A New IP
 
