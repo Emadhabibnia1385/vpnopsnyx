@@ -338,6 +338,11 @@ on paths where TCP DNAT died and xDi was lossy:
   machines were fast to everything else. Sending that port over the relay's healthy GRE link to another
   exit and DNAT-ing it from there to the slow exit (an `nft` table matched on the GRE interface, plus
   `masquerade`) restored the path; the sibling reached the slow exit at ~150 Mbit.
+- **An old DNAT rule silently overrides a newer port-forward tunnel.** A relay got port-mode tunnels that
+  listen on the location ports, but an older `nft` DNAT table for some of the same ports was still
+  loaded; prerouting DNAT wins over a local listener, so those ports kept going to long-dead tunnel
+  addresses and failed. After anyone changes a relay's tunnel type, list every NAT table
+  (`nft list tables`) and remove rules for ports the new tunnel now owns.
 - **Check the exit's own upload before blaming a tunnel.** When every relay and a foreign server too
   download slowly from one exit while its own downloads are fast, the provider has capped its upload;
   no tunnel change helps. Measure from a foreign server first, then open a ticket.
