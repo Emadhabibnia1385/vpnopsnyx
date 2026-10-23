@@ -59,6 +59,11 @@ relay datacenters. Names, addresses, domains and tokens are removed. Everything 
   users connected (handshake went "green") then stalled mid-stream, worst while scrolling video. Raising
   the tunnel's channel/queue size and socket buffers, switching to the aggressive preset, and adding
   keepalive/heartbeat ended the dial-cancel bursts with no change of transport.
+  **Size those buffers to the relay's RAM.** The same tuning (32 MB socket buffers, an 8192-entry
+  channel, aggressive preset) across six tunnels on a 2 GB relay used 250-530 MB per tunnel process; the
+  kernel OOM-killed the busiest tunnel every 5-15 minutes, and every kill dropped all of its users at once
+  ("connected, then disconnected again"). Swap stopped the kills; more RAM or smaller buffers fixed it.
+  Watch `journalctl -k | grep "Out of memory"` and the tunnel units' restart counters after any change.
 - Converting a relay's cheap kernel DNAT forwarding to the userspace tunnel bypassed throttle but cost
   real CPU. A 2-core relay that also ran L3/ICMP-carrier tunnels could not also carry obfuscated tunnels
   for every exit; its load was softirq (packet processing) dominated, not the tunnel process's own CPU,
