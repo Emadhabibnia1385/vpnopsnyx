@@ -184,6 +184,12 @@ Short and factual: symptom → diagnosis → fix → lesson. Names, addresses an
     ceiling, three names were left on the other relay only; that relay dropped an hour later and the three
     locations went dark. Lesson: never leave a name on one relay, even temporarily. Relieve a saturated
     relay by adding capacity, or by dropping it only from names that keep two other relays.
+63. **Almost every node of a panel lost its core within a few hours.** Tunnel, WireGuard and direct nodes
+    on seven exits all showed `connected` while their Xray was stopped; the panel log said
+    `Stream failed ... backend not initialized` and also showed database lock timeouts and 5–15 s API
+    responses. Re-saving every node brought them back. A port-listener check only covered the tunnel
+    ports and missed the others. Lesson: scan every node container for `Code: Unavailable`
+    (`docker logs --since 3m`), and consider a panel-side watchdog that re-saves nodes whose stream fails.
 
 Provider tickets: give a short table of measurements with time and time zone, compare the failing
 destinations with a working baseline (1.1.1.1, domestic datacenters), state what changed (for example a
