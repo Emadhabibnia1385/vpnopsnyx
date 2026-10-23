@@ -180,6 +180,10 @@ Short and factual: symptom → diagnosis → fix → lesson. Names, addresses an
     relay that is busier than its traffic explains, list processes by CPU, check
     `/proc/PID/cmdline` and `/proc/PID/exe`, and ask the operator before stopping anything you did not
     start.
+62. **Offloading a saturated relay took three locations down.** To relieve one relay at its bandwidth
+    ceiling, three names were left on the other relay only; that relay dropped an hour later and the three
+    locations went dark. Lesson: never leave a name on one relay, even temporarily. Relieve a saturated
+    relay by adding capacity, or by dropping it only from names that keep two other relays.
 
 Provider tickets: give a short table of measurements with time and time zone, compare the failing
 destinations with a working baseline (1.1.1.1, domestic datacenters), state what changed (for example a
