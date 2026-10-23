@@ -49,6 +49,39 @@ relay datacenters. Names, addresses, domains and tokens are removed. Everything 
   port first; without a conntrack flush, users drained across with no visible drop.
 - Servers rebuilt or resized by the provider came back with new SSH host keys or fewer cores.
 
+## Late October - Obfuscated Tunnel Engine, Tuning, And Cutovers
+
+- An obfuscated userspace tunnel (TCP stealth-style transport) bypassed the in-country to foreign
+  throttle completely, while raw TCP/UDP/GRE to the same foreign exit saw near-total loss; a "no tunnel
+  works" conclusion drawn from the raw tests alone was wrong, and the obfuscated engine had to be tested
+  directly before judging a path dead.
+- That engine's default minimal config dropped new-connection dials in bursts under a connection storm:
+  users connected (handshake went "green") then stalled mid-stream, worst while scrolling video. Raising
+  the tunnel's channel/queue size and socket buffers, switching to the aggressive preset, and adding
+  keepalive/heartbeat ended the dial-cancel bursts with no change of transport.
+- Converting a relay's cheap kernel DNAT forwarding to the userspace tunnel bypassed throttle but cost
+  real CPU. A 2-core relay that also ran L3/ICMP-carrier tunnels could not also carry obfuscated tunnels
+  for every exit; its load was softirq (packet processing) dominated, not the tunnel process's own CPU,
+  and the L3/ICMP-carrier links were the heaviest softirq source.
+- A DNAT-to-tunnel cutover caused a reconnect storm - every affected user reconnecting at once - that
+  spiked the relay to near-zero idle for a few minutes. Read as steady-state overload it caused a
+  needless relay disable; the storm settled and the same 2-core relay then carried the load fine. Wait
+  out a cutover before judging a relay's steady-state load.
+- "Connects green then times out" had several distinct causes that only live data told apart: an
+  overloaded relay dropping packets, a dead IP left in round-robin DNS, the user's own data quota
+  exhausted, and a relay's traffic quota exhausted (which cuts the international path while the box stays
+  reachable in-country).
+- Two IPs of the same exit host differed wildly - one 0% loss with sub-millisecond jitter, the other
+  20-25% loss - so a latency-sensitive target (for example a WireGuard endpoint) must be chosen by
+  probing the specific IP, not the host name.
+- A wiped/rebuilt exit needed both its panel node re-added (new certs) and every tunnel client rebuilt
+  from scratch; the tunnel binary was copied from a sibling relay rather than re-run from a remote
+  installer.
+- Spreading one exit across several relays by round-robin DNS added redundancy, but every added relay is
+  another IP that some in-country ISP may not reach well - a relay bad from one network times out only
+  the users on that network, so more relays is not strictly better, and a too-small relay added to the
+  rotation hurts rather than helps.
+
 ## Handling Rule
 
 Same as September: prefer live evidence and the deployed version's behavior, label new findings, and
