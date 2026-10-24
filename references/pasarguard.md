@@ -296,6 +296,15 @@ Adding a tunnel inbound to an existing node (verified on a 2026 PasarGuard relea
 The admin token for these calls can be minted inside the panel container as in `scripts/panel/node_edit.sh`;
 some panel versions have no `is_sudo` column, so pick the admin without it.
 
+**Adding a location without restarting every node.** When one core is shared by all tunnel nodes, adding an
+inbound to it restarts every node on that core (and some nodes may not come back, see section 12). A new
+exit can instead run the same core and reuse an existing inbound tag: give its host its own address and a
+new relay port (`port` on the host overrides the inbound port), and DNAT that relay port to the inbound's
+real port on the new exit. Users who already have the tag get the new host at once. Prefer a tag whose own
+hosts are disabled, so no group gains a location it should not have. A new exit's first core start can take
+longer than the default node timeout when the panel has tens of thousands of users; raise
+`default_timeout`/`internal_timeout` on that node (`scripts/panel/node_edit.sh`) if it keeps timing out.
+
 ## 19. Database Connection Pool Exhaustion
 
 `operator-observed`, October 2026, PasarGuard 5.4 with MySQL. The panel loaded, but the user list, logins
