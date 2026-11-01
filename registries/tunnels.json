@@ -140,6 +140,25 @@
         "Installer verifies SHA256SUMS.sig with an embedded RSA key but runs the main branch as root unpinned, can silently skip verification (WAT_SKIP_CHECKSUM/missing openssl), and has unsigned paths (local dist, source build.sh, manager from raw main); service runs as root with setcap cap_net_raw/admin/bind_service.",
         "Encrypts only the Iran<->Kharej leg - run an E2E protocol (VLESS+Reality/TLS/WireGuard) inside. The wat1: token contains the key and is a secret; never print or commit it. Vendor performance claims are unverified."
       ]
+    },
+    {
+      "name": "C-Tunnel",
+      "category": "direct-and-reverse-tunnel-engine",
+      "status": ["verified-source", "third-party", "community", "high-impact"],
+      "repository": "https://github.com/CIAUB/C-Tunnel",
+      "installer": "https://raw.githubusercontent.com/CIAUB/C-Tunnel/main/install.sh",
+      "license": "AGPL-3.0",
+      "reviewed_release": "v0.2.1",
+      "contact": ["https://t.me/CiAUB_CH"],
+      "transports": ["gre", "ipip", "6to4", "6to4-gre", "sit", "ip6gre", "ipip6", "ip6ip6", "wireguard", "xfrm-ipsec", "fou-gre", "gue-ipip", "ecmp-lanes", "eoip", "gretap", "ip6gretap", "vxlan", "geneve", "l2tpv3", "etherip", "dtls-1.3", "quic-v1", "srtp-direct", "wg-stealth", "rudp-fec", "dnscrypt-udp", "ntp-direct", "openvpn-dco"],
+      "reverse_modes": ["rev+ (UDP-Crypt/WireGuard, Kharej dials Iran)", "frp+ (kernel L3/L2 over up to 8 parallel TLS-shaped TCP streams)"],
+      "features": ["AES-256-GCM per-direction keys", "2000-packet anti-replay", "random padding", "XOR-FEC (rudp-fec)", "protocol-mimic UDP framing (dtls/quic/srtp/dns/ntp/openvpn/wg-stealth)", "ctunnel:// setup links", "conntest method/speed probe", "optimize (BBR/fq/buffers)", "SOCKS5/HTTP proxy", "web panel"],
+      "notes": [
+        "Go binary + ctunnel-kernel helper + BackPack-style menu; manage menu derived from BackPack (AminMGMT). Config /etc/ctunnel/{state.json,panel.json,tunnels/<name>.env}; units ctunnel@<name> (kernel), ctunnel-engine@<name> (UDP-Crypt/EoIP/EtherIP), ctunnel-panel.",
+        "Installer verifies release SHA256SUMS and aborts on mismatch, but tracks main unpinned by default (pin v0.2.1) and the checksum ships with the binaries (integrity, not provenance); services run as root; web panel defaults to HTTP on a random path (keep off public internet).",
+        "UDP-Crypt sequence numbers are clock-based: both servers need NTP or UDP-Crypt methods silently break. Encrypts only the Iran<->Kharej leg - run an E2E protocol inside.",
+        "On Iran<->Kharej links, run `ctunnel conntest` first: international/native UDP (quic-v1, plain wireguard) is typically dropped while frp+ TCP streams and some UDP-Crypt (rudp-fec, wg-stealth) survive - verify per path. The ctunnel:// link carries keys and is a secret; never print or commit it. Vendor performance claims are unverified."
+      ]
     }
   ]
 }

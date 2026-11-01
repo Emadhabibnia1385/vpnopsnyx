@@ -302,3 +302,39 @@ service runs as root. Prefer a pinned release, verify the signature yourself, re
 generated unit, and keep the `metrics` endpoint on `127.0.0.1`. The `wat1:` token
 contains the key — treat it as a secret, never print or commit it. Vendor performance
 claims are `unverified`.
+
+## C-Tunnel
+
+Status: `verified-source`, `third-party`, `community`, `high-impact`
+
+Source:
+
+- Repository: https://github.com/CIAUB/C-Tunnel
+- Installer: https://raw.githubusercontent.com/CIAUB/C-Tunnel/main/install.sh
+- License AGPL-3.0; latest reviewed release v0.2.1. Manage menu derived from BackPack (AminMGMT).
+
+Direct **and** reverse tunnel engine (Go binary + `ctunnel-kernel` helper +
+BackPack-style menu) with 28 transports: kernel L3 (`gre`/`ipip`/`sit`/`wireguard`/
+`xfrm-ipsec`/`ecmp-lanes`/…), kernel L2 (`eoip`/`gretap`/`vxlan`/`geneve`/`l2tpv3`/…),
+and an **UDP-Crypt** family that frames AES-256-GCM traffic as `dtls-1.3`/`quic-v1`/
+`srtp`/`wg-stealth`/`rudp-fec` (XOR-FEC)/`dnscrypt`/`ntp`/`openvpn-dco`. Plus `rev+`
+(Kharej dials Iran) and `frp+` (kernel tunnel over up to 8 TLS-shaped parallel TCP
+streams) reverse modes, one-line `ctunnel://` links, a `conntest` method/speed probe,
+and a web panel. Run your end-to-end protocol inside. See `guides/tunnels/ctunnel.md`.
+
+Documented one-liner, run as root (systemd, amd64/arm64) on both servers — **pin the
+reviewed version**:
+
+```bash
+sudo bash -c "$(curl -sL https://raw.githubusercontent.com/CIAUB/C-Tunnel/main/install.sh)" v0.2.1
+```
+
+The installer verifies every asset against the release `SHA256SUMS` and aborts on a
+mismatch, but by default tracks `main` unpinned, runs as root, and the checksum file
+ships with the binaries (integrity, not provenance). Services run as root; the web
+panel defaults to HTTP on a random persisted path (keep it off the public internet).
+UDP-Crypt sequence numbers are clock-based, so both servers need NTP. On Iran↔Kharej
+links, run `ctunnel conntest` first — international/native UDP (`quic-v1`, plain
+`wireguard`) is typically dropped while `frp+` TCP streams and some UDP-Crypt methods
+survive. The `ctunnel://` setup link carries keys — treat it as a secret, never print
+or commit it. Vendor performance claims are `unverified`.
