@@ -19,6 +19,7 @@ operator tools.
 | `relay/udp_survival.py` | probe and target | Whether a single UDP flow survives past its first packets, before offering WireGuard, KCP, or QUIC on a path. |
 | `local/cf.sh` | operator workstation | Cloudflare DNS listing and A-record add/delete. The token is read from a mode-600 file and never appears in argv or history. |
 | `node/bpstatus.sh` | relay or exit | Every active BackPack link with its role, carrier, peer and packet loss to the peer. A unit can be `active` while the path is dead. |
+| `node/bpaudit.sh` | relay or exit | Every active BackPack unit with transport and `accept_udp` (flags anything but `wsmux` + `accept_udp = true`), and layer-3 links by interface byte-counter delta over a short window. Use it before removing any tunnel. |
 | `panel/node_status.py` | PasarGuard panel container | Every node with address, port, status and the panel's last error message (certificate, port-bind, timeout errors). |
 | `local/dns_brand_audit.sh` | operator workstation | Lists A records in one Cloudflare account that point at another brand's relays. |
 | `relay/forward_audit.sh` | relay | Every port the relay forwards (nftables DNAT, Backhaul and BackPack maps) and its target; flags ports of another brand (`FORBID`). |
