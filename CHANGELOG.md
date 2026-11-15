@@ -4,6 +4,8 @@ All notable changes to VPNOpsNyx are documented here.
 
 ## Unreleased
 
+- Merged two documentation commits from the Mobin fork that never reached `main`: the C-Tunnel registry entry and runbook (reviewed at v0.2.1; upstream has since released v1.1.1, so re-review the installer and transport list before relying on it) and the BackPack `wsmux` + `accept_udp` fleet standard.
+
 - Added: field lessons from a fleet reboot and a cross-border blip: incidents 79-83 (relay-side tunnel server wedged while every status said healthy, reboot-time port self-connect on a shared exit, random-port alert noise, admin-id HTTP 400 notification failures, rebooting a split location and swap on exits), `tunnels.md` §20 (diagnosing and restarting a wedged tunnel server), `node-lifecycle.md` §16 (rebooting hosts one by one with drain and snapshot diff), `pasarguard.md` §22 (notification 400s); `relay/data_matrix.sh` gains `TRIES` sampling, and `SKILL.md` says one probe is not a verdict.
 
 - Added: BackPack fleet standard `wsmux` + `accept_udp` with sanitized relay/exit templates, what `accept_udp` does and does not do, transport selection by data path, systemd keep-alive drop-in, exit inbound-port reservation, and cost/quota notes (`guides/tunnels/backpack.md`); `node/bpaudit.sh` audits every BackPack unit and measures layer-3 links by byte-counter delta instead of socket counts or ping.
